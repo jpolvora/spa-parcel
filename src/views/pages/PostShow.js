@@ -1,5 +1,3 @@
-import Utils        from './../../services/Utils.js'
-
 let getPost = async (id) => {
     const options = {
        method: 'GET',
@@ -19,8 +17,8 @@ let getPost = async (id) => {
 
 let PostShow = {
 
-    render : async () => {
-        let request = Utils.parseRequestURL()
+    render : async (request) => {       
+        console.log(request) 
         let post = await getPost(request.id)
         
         return /*html*/`

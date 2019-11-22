@@ -4,22 +4,27 @@
   "description": "Initial setup custom spa-template",
   "private": true,
   "scripts": {
-    "dev": "parcel ./src/index.html",
+    "start": "live-server dist --verbose --spa --entry-file=./index.html --no-css-inject",
+    "dev": "parcel ./src/index.html --open",
     "build": "parcel build ./src/index.html"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jone Polvora",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
     "babel-preset-env": "^1.7.0",
+    "caprover": "^2.1.0",
+    "live-server": "^1.2.1",
     "parcel-bundler": "^1.12.4"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.2",
-    "navigo": "^7.1.2",
-    "page": "^1.11.5"
+    "knockout": "^3.5.1",
+    "knockout.validation": "^2.0.4",
+    "navigo": "^7.1.2"
   }
 }
