@@ -1,5 +1,5 @@
 export default  {
-    setup() {
-        console.log('profile setup')
-    }
+  setup() {
+    console.log('profile setup')
+  }
 }

@@ -1,26 +1,26 @@
 import ko from 'knockout'
 
 const viewModel = function () {
-    return {
-        email: ko.observable('').extend({ email: true, required: true }),
-        pass1: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
-        pass2: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
+  return {
+    email: ko.observable('').extend({ email: true, required: true }),
+    pass1: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
+    pass2: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
 
-        validate: function (formEl) {
-            console.log(formEl)
-            if (!this.email.isValid()) return alert('email inválido')
-            if (!this.pass1.isValid()) return alert('pass1 inválido')
-            if (!this.pass2.isValid()) return alert('pass1 inválido')
+    validate: function (formEl) {
+      console.log(formEl)
+      if (!this.email.isValid()) return alert('email inválido')
+      if (!this.pass1.isValid()) return alert('pass1 inválido')
+      if (!this.pass2.isValid()) return alert('pass1 inválido')
 
-            if (this.pass1() !== this.pass2()) return alert('senhas diferem')
-            return alert('tudo ok')
-        }
+      if (this.pass1() !== this.pass2()) return alert('senhas diferem')
+      return alert('tudo ok')
     }
+  }
 }
 
 const Register = {
-    render: async () => {
-        return /*html*/ `
+  render: async () => {
+    return /*html*/ `
         <form data-bind="submit: validate">
             <section class="section">
                 <div class="field">
@@ -61,13 +61,13 @@ const Register = {
             </section>
             </form>
         `
-    },
-    // All the code related to DOM interactions and controls go in here.
-    // This is a separate call as these can be registered only after the DOM has been painted
+  },
+  // All the code related to DOM interactions and controls go in here.
+  // This is a separate call as these can be registered only after the DOM has been painted
 
-    after_render: async (root) => {
-        ko.applyBindings(viewModel, root)
-    }
+  after_render: async (root) => {
+    ko.applyBindings(viewModel, root)
+  }
 }
 
 export default Register

@@ -1,6 +1,6 @@
 let Navbar = {
-    render: async () => {
-        let view =  /*html*/`
+  render: async () => {
+    let view =  /*html*/`
              <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div class="container">
                     <div class="navbar-brand">
@@ -43,9 +43,9 @@ let Navbar = {
                 </div>
             </nav>
         `
-        return view
-    },
-    after_render: async () => { }
+    return view
+  },
+  after_render: async () => { }
 
 }
 
