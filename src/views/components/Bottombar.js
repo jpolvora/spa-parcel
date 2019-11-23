@@ -15,4 +15,4 @@ let Bottombar = {
 
 }
 
-export default Bottombar;
+export default Bottombar

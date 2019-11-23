@@ -3,15 +3,15 @@
 // --------------------------------
 
 let getPostsList = async () => {
-     const options = {
+    const options = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
-    };
+    }
     try {
-        const response = await fetch(`https://5bb634f6695f8d001496c082.mockapi.io/api/posts`, options)
-        const json = await response.json();
+        const response = await fetch('https://5bb634f6695f8d001496c082.mockapi.io/api/posts', options)
+        const json = await response.json()
         // console.log(json)
         return json
     } catch (err) {
@@ -27,9 +27,9 @@ let Home = {
                 <h1> Home </h1>
                 <ul>
                     ${ posts.map(post => 
-                        /*html*/`<li><a href="#/p/${post.id}">${post.title}</a></li>`
-                        ).join('\n ')
-                    }
+    /*html*/`<li><a href="#/p/${post.id}">${post.title}</a></li>`
+    ).join('\n ')
+}
                 </ul>
             </section>
         `
@@ -40,4 +40,4 @@ let Home = {
 
 }
 
-export default Home;
+export default Home

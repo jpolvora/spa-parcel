@@ -1,8 +1,8 @@
-"use strict";
+'use strict'
 
 import ko from 'knockout'
 import 'knockout.validation'
-ko.validation.rules.pattern.message = 'Invalid.';
+ko.validation.rules.pattern.message = 'Invalid.'
 
 ko.validation.init({
     registerExtenders: true,
@@ -10,7 +10,7 @@ ko.validation.init({
     insertMessages: true,
     parseInputAttributes: true,
     messageTemplate: null
-}, true);
+}, true)
 
 import router from './router'
 
@@ -53,23 +53,23 @@ const setup = async () => {
 
     router.on({
         '/': function () {
-            setContent(Home, {});
+            setContent(Home, {})
         },
         'profile': function () {
             Profile.setup()
         },
         'about': function () {
-            setContent(About, {});
+            setContent(About, {})
         },
         'register': function () {
-            setContent(Register, {});
+            setContent(Register, {})
         },
         '/p/:id': function (params) {
-            setContent(PostShow, params);
+            setContent(PostShow, params)
         }
     })
 
-    return router.resolve();
+    return router.resolve()
 }
 
 
@@ -77,5 +77,5 @@ const setup = async () => {
 window.addEventListener('load', () => {
     console.log('load')
     return setup()
-});
+})
 

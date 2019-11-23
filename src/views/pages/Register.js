@@ -7,6 +7,7 @@ const viewModel = function () {
         pass2: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
 
         validate: function (formEl) {
+            console.log(formEl)
             if (!this.email.isValid()) return alert('email inválido')
             if (!this.pass1.isValid()) return alert('pass1 inválido')
             if (!this.pass2.isValid()) return alert('pass1 inválido')
@@ -69,4 +70,4 @@ const Register = {
     }
 }
 
-export default Register;
+export default Register
