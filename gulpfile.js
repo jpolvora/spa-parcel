@@ -1,4 +1,5 @@
-/* eslint-disable no-undef */
+/*eslint-env node*/
+
 const gulp = require('gulp')
 const git = require('gulp-git')
 const bump = require('gulp-bump')
@@ -17,3 +18,5 @@ function inc(importance) {
 gulp.task('patch', function () { return inc('patch') })
 gulp.task('feature', function () { return inc('minor') })
 gulp.task('release', function () { return inc('major') })
+
+gulp.task('default', () => inc('patch'))
