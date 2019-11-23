@@ -1,6 +1,6 @@
 import { html } from 'common-tags'
 const Bottombar = {
-  render: async () => {
+  render: () => {
     return html`
         <footer class="footer">
             <div class="content has-text-centered">
@@ -9,9 +9,7 @@ const Bottombar = {
                 </p>
             </div>
         </footer>`
-  },
-  after_render: async () => { }
-
+  }
 }
 
 export default Bottombar

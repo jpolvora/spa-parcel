@@ -3,7 +3,7 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-23 03:57:58
+ * @ Modified time: 2019-11-23 05:10:14
  */
 
 'use strict'
@@ -22,6 +22,7 @@ ko.validation.init({
 
 import router from './router'
 import Loading from './views/components/Loading'
+import ShowError from './views/components/ShowError'
 
 import Home from './views/pages/Home.js'
 import About from './views/pages/About.js'
@@ -40,19 +41,29 @@ const shellViewModel = {
 
 const timeout = ms => new Promise(res => setTimeout(res, ms))
 
+async function renderError(error) {
+  const html = ShowError.render(error)
+  return shellViewModel.content(html)
+}
+
 function renderComponent(component) {
   return async (params) => {
-    const loadingView = await Loading.render()
-    shellViewModel.content(loadingView)
-    await timeout(100)
-    if (!component) throw new Error('Invalid argument: component')
-    if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
+    try {
+      const loadingView = Loading.render()
+      shellViewModel.content(loadingView)
+      await timeout(100)
+      if (!component) throw new Error('Invalid argument: component')
+      if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
 
-    const html = await component.render(params)
-    shellViewModel.content(html)
+      const html = await component.render(params)
+      shellViewModel.content(`<div id='shell'>${html}</div>`)
 
-    if (typeof component.after_render === 'function') {
-      await component.after_render()
+      if (typeof component.after_render === 'function') {
+        await component.after_render(params)
+      }
+    } catch (e) {
+      console.error(e)
+      return renderError(e)
     }
   }
 }
@@ -60,9 +71,9 @@ function renderComponent(component) {
 
 const setup = async () => {
 
-  shellViewModel.header(await Navbar.render())
-  shellViewModel.content(await Loading.render())
-  shellViewModel.footer(await Bottombar.render())
+  shellViewModel.header(Navbar.render())
+  shellViewModel.content(Loading.render())
+  shellViewModel.footer(Bottombar.render())
 
   ko.applyBindings(shellViewModel)
 
@@ -73,6 +84,7 @@ const setup = async () => {
     'about': renderComponent(About),
     'register': renderComponent(Register),
     '/p/:id': renderComponent(PostShow),
+    '/error': renderComponent(false)
   })
 
   return router.resolve()

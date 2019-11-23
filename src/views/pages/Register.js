@@ -4,8 +4,8 @@ import ko from 'knockout'
 const viewModel = function () {
   return {
     email: ko.observable('').extend({ email: true, required: true }),
-    pass1: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
-    pass2: ko.observable().extend({ required: true, minLength: 6, maxLength: 12 }),
+    pass1: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
+    pass2: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
 
     validate: function (formEl) {
       console.log(formEl)
@@ -22,7 +22,7 @@ const viewModel = function () {
 const Register = {
   render: async () => {
     return html`
-        <form id="form" data-bind="submit: validate">
+        <form data-bind="submit: validate">
             <section class="section">
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
@@ -60,14 +60,14 @@ const Register = {
                 </div>
 
             </section>
-            </form>
+        </form>
         `
   },
   // All the code related to DOM interactions and controls go in here.
   // This is a separate call as these can be registered only after the DOM has been painted
 
   after_render: async () => {
-    ko.applyBindings(viewModel, document.getElementById('form'))
+    ko.applyBindings(viewModel, document.getElementById('shell'))
   }
 }
 

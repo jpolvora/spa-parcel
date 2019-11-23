@@ -1,7 +1,7 @@
 import { html } from 'common-tags'
 
 const Navbar = {
-  render: async () => {
+  render: () => {
     const view = html`
              <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div class="container">
@@ -46,8 +46,7 @@ const Navbar = {
             </nav>
         `
     return view
-  },
-  after_render: async () => { }
+  }
 
 }
 

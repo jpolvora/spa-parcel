@@ -1,5 +1,5 @@
 import { html } from 'common-tags'
 
 export default {
-  render: () => html`<article>Loading...</article>`
+  render: (message) => html`<code>${message}</code>`
 }
