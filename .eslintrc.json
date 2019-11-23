@@ -37,6 +37,10 @@
                 "prev": "*",
                 "next": "function"
             }
-        ]
+        ],
+        "prefer-const": ["error", {
+            "destructuring": "any",
+            "ignoreReadBeforeAssign": false
+        }]
     }
 }

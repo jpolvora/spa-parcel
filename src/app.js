@@ -1,3 +1,11 @@
+/**
+ * @ Author: Jone Pólvora
+ * @ Create Time: 2019-11-21 15:24:24
+ * @ Description:
+ * @ Modified by: Jone Pólvora
+ * @ Modified time: 2019-11-23 02:00:36
+ */
+
 'use strict'
 
 import ko from 'knockout'
