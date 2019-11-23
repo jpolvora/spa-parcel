@@ -3,7 +3,7 @@
  * @ Create Time: 2019-11-21 19:16:31
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-23 02:15:45
+ * @ Modified time: 2019-11-23 03:51:31
  */
 
 
@@ -22,8 +22,8 @@ router.hooks({
   after: function (params) {
     console.log('router after', params)
   },
-  leave: function () {
-    console.log('router leave')
+  leave: function (params) {
+    console.log('router leave', params)
   }
 })
 
