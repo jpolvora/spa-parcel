@@ -1,6 +1,6 @@
-let Navbar = {
+const Navbar = {
   render: async () => {
-    let view =  /*html*/`
+    const view =  /*html*/`
              <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div class="container">
                     <div class="navbar-brand">

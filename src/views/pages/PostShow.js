@@ -1,4 +1,4 @@
-let getPost = async (id) => {
+const getPost = async (id) => {
   const options = {
     method: 'GET',
     headers: {
@@ -15,11 +15,11 @@ let getPost = async (id) => {
   }
 }
 
-let PostShow = {
+const PostShow = {
 
   render : async (request) => {       
     console.log(request) 
-    let post = await getPost(request.id)
+    const post = await getPost(request.id)
         
     return /*html*/`
             <section class="section">

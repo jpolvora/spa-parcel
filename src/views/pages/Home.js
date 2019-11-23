@@ -2,7 +2,7 @@
 //  Define Data Sources
 // --------------------------------
 
-let getPostsList = async () => {
+const getPostsList = async () => {
   const options = {
     method: 'GET',
     headers: {
@@ -19,10 +19,10 @@ let getPostsList = async () => {
   }
 }
 
-let Home = {
+const Home = {
   render : async () => {
-    let posts = await getPostsList()
-    let view =  /*html*/`
+    const posts = await getPostsList()
+    const view =  /*html*/`
             <section class="section">
                 <h1> Home </h1>
                 <ul>

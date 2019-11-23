@@ -1,6 +1,6 @@
-let Bottombar = {
+const Bottombar = {
   render: async () => {
-    let view =  /*html*/`
+    const view =  /*html*/`
         <footer class="footer">
             <div class="content has-text-centered">
                 <p>

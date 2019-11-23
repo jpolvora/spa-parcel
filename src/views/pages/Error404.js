@@ -1,7 +1,7 @@
-let Error404 = {
+const Error404 = {
 
   render : async () => {
-    let view =  /*html*/`
+    const view =  /*html*/`
             <section class="section">
                 <h1> 404 Error </h1>
             </section>
