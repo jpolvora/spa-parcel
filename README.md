@@ -28,6 +28,12 @@ Run `npm run debug`
 
 `npm run build`
 
+### Gulp tasks
+
+* tag version (changes package.json)
+
+    `gulp patch`
+
 # Caprover
 
 Configure `caprover setup`
