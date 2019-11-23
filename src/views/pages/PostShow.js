@@ -1,3 +1,5 @@
+import { html } from 'common-tags'
+
 const getPost = async (id) => {
   const options = {
     method: 'GET',
@@ -16,13 +18,12 @@ const getPost = async (id) => {
 }
 
 const PostShow = {
+  render: async (params) => {
+    console.log(params)
+    const post = await getPost(params.id)
 
-  render : async (request) => {       
-    console.log(request) 
-    const post = await getPost(request.id)
-        
-    return /*html*/`
-            <section class="section">
+    return html`
+              <section class="section">
                 <h1> Post Id : ${post.id}</h1>
                 <p> Post Title : ${post.title} </p>
                 <p> Post Content : ${post.content} </p>

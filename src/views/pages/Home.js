@@ -1,6 +1,4 @@
-// --------------------------------
-//  Define Data Sources
-// --------------------------------
+import { html } from 'common-tags'
 
 const getPostsList = async () => {
   const options = {
@@ -20,16 +18,13 @@ const getPostsList = async () => {
 }
 
 const Home = {
-  render : async () => {
+  render: async () => {
     const posts = await getPostsList()
-    const view =  /*html*/`
+    const view = html`
             <section class="section">
                 <h1> Home </h1>
                 <ul>
-                    ${ posts.map(post => 
-    /*html*/`<li><a href="#/p/${post.id}">${post.title}</a></li>`
-  ).join('\n ')
-}
+                    ${ posts.map(post => html`<li><a href="#/p/${post.id}">${post.title}</a></li>`).join('\n ')}
                 </ul>
             </section>
         `

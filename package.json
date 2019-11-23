@@ -1,6 +1,6 @@
 {
   "name": "spa-parcel",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Initial setup custom spa-template",
   "private": true,
   "scripts": {
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.2",
+    "common-tags": "^1.8.0",
     "knockout": "^3.5.1",
     "knockout.validation": "^2.0.4",
     "navigo": "^7.1.2"

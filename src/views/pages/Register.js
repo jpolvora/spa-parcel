@@ -1,3 +1,4 @@
+import { html } from 'common-tags'
 import ko from 'knockout'
 
 const viewModel = function () {
@@ -20,8 +21,8 @@ const viewModel = function () {
 
 const Register = {
   render: async () => {
-    return /*html*/ `
-        <form data-bind="submit: validate">
+    return html`
+        <form id="form" data-bind="submit: validate">
             <section class="section">
                 <div class="field">
                     <p class="control has-icons-left has-icons-right">
@@ -65,8 +66,8 @@ const Register = {
   // All the code related to DOM interactions and controls go in here.
   // This is a separate call as these can be registered only after the DOM has been painted
 
-  after_render: async (root) => {
-    ko.applyBindings(viewModel, root)
+  after_render: async () => {
+    ko.applyBindings(viewModel, document.getElementById('form'))
   }
 }
 

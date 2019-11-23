@@ -22,7 +22,7 @@ A pre-configured boilerplate for creating SPA apps
 
 ### development mode
 
-Run `npm run debug`
+Run `npm run dev`
 
 ### build
 

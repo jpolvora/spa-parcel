@@ -1,6 +1,8 @@
+import { html } from 'common-tags'
+
 const Navbar = {
   render: async () => {
-    const view =  /*html*/`
+    const view = html`
              <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div class="container">
                     <div class="navbar-brand">
