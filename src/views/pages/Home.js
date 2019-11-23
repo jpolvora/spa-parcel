@@ -1,23 +1,7 @@
 import { html } from 'common-tags'
+import { getPostsList } from '../../services/api'
 
-const getPostsList = async () => {
-  const options = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-  try {
-    const response = await fetch('https://5bb634f6695f8d001496c082.mockapi.io/api/posts', options)
-    const json = await response.json()
-    // console.log(json)
-    return json
-  } catch (err) {
-    console.log('Error getting documents', err)
-  }
-}
-
-const Home = {
+export default {
   render: async () => {
     const posts = await getPostsList()
     const view = html`
@@ -30,9 +14,5 @@ const Home = {
         `
     return view
   }
-  , after_render: async () => {
-  }
 
 }
-
-export default Home

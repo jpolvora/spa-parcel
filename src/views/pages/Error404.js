@@ -1,7 +1,6 @@
 import { html } from 'common-tags'
 
-const Error404 = {
-
+export default {
   render: async () => {
     const view = html`
             <section class="section">
@@ -10,7 +9,4 @@ const Error404 = {
         `
     return view
   }
-  , after_render: async () => {
-  }
 }
-export default Error404
