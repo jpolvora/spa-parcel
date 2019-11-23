@@ -25,5 +25,4 @@ $RECYCLE.BIN/
 node_modules
 dist
 .cache
-package-lock.json
 *.tar

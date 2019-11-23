@@ -20,8 +20,7 @@
     "caprover": "^2.1.0",
     "eslint": "^6.7.0",
     "husky": "^3.1.0",
-    "lint-staged": "^9.4.3",
-    "live-server": "^1.2.1",
+    "lint-staged": "^9.4.3",    
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-clean-dist": "0.0.6"
   },
