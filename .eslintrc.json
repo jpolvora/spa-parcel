@@ -18,16 +18,12 @@
             "error",
             2
         ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
         "quotes": [
             "error",
             "single"
         ],
         "semi": [
-            "warn",
+            "error",
             "never"
         ],
         "padding-line-between-statements": [
@@ -38,9 +34,12 @@
                 "next": "function"
             }
         ],
-        "prefer-const": ["error", {
-            "destructuring": "any",
-            "ignoreReadBeforeAssign": false
-        }]
+        "prefer-const": [
+            "error",
+            {
+                "destructuring": "any",
+                "ignoreReadBeforeAssign": false
+            }
+        ]
     }
 }
