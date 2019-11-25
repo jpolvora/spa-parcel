@@ -7,19 +7,13 @@ const viewModel = function () {
 
   return {
     email: ko.observable('').extend({ email: true, required: true }),
-    pass1: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
-    pass2: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
+    password: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
 
-    validate: function (formEl) {
-      console.log(formEl)
+    validate: function () {
       if (!this.email.isValid()) return alert('email inválido')
-      if (!this.pass1.isValid()) return alert('pass1 inválido')
-      if (!this.pass2.isValid()) return alert('pass1 inválido')
-
-      if (this.pass1() !== this.pass2()) return alert('senhas diferem')
-
-      pubsub.publish('loggedIn', true)
-      return alert('tudo ok')
+      if (!this.password.isValid()) return alert('password inválido')
+      pubsub.publish('login', true)
+      alert('tudo ok')
     }
   }
 }
@@ -32,9 +26,9 @@ const Register = {
     <img class="mb-4" src="https://getbootstrap.com/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
     <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" data-bind="value: email" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" data-bind="value: password" required>
     <div class="checkbox mb-3">
       <label>
         <input type="checkbox" value="remember-me"> Remember me
