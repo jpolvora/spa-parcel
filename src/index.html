@@ -10,7 +10,9 @@
 </head>
 
 <body class="d-flex flex-column h-100" id="app">
-
+    <header data-bind="html: header"></header>
+    <main role="main" class="flex-shrink-0" data-bind="html: content"></main>
+    <footer class="footer mt-auto py-3" data-bind="html: footer"></footer>
 </body>
 
 </html>

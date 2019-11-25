@@ -1,6 +1,6 @@
 import $ from 'jquery'
 
-export default function () {
+const factory = () => {
   var target = $({})
   var knownEvents = {}
   return {
@@ -22,3 +22,7 @@ export default function () {
     }
   }
 }
+
+/*singleton*/
+const singleton = factory()
+export default singleton
