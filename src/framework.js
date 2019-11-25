@@ -86,7 +86,7 @@ export default class App {
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
 
         const html = await component.render(params)
-        this.shell.data.content(`<div id='shell'>${html}</div>`)
+        this.shell.data.content(html)
 
         if (typeof component.after_render === 'function') {
           await component.after_render(params)

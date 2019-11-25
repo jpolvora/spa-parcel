@@ -1,18 +1,14 @@
 import { html } from 'common-tags'
-import { getPostsList } from '../../services/api'
 
 export default {
   render: async () => {
-    const posts = await getPostsList()
-    const view = html`
-            <section class="section">
-                <h1> Home </h1>
-                <ul>
-                    ${ posts.map(post => html`<li><a href="#/p/${post.id}">${post.title}</a></li>`).join('\n ')}
-                </ul>
-            </section>
-        `
-    return view
+    return html`
+<div class="container">
+  <h1 class="mt-5">Sticky footer with fixed navbar</h1>
+  <p class="lead">Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>main &gt; .container</code>.</p>
+  <p>Back to <a href="/docs/4.3/examples/sticky-footer/">the default sticky footer</a> minus the navbar.</p>
+</div>
+    `
   }
 
 }

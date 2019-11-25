@@ -4,7 +4,7 @@
   "description": "Initial setup custom spa-template",
   "private": true,
   "scripts": {
-    "dev": "parcel ./src/index.html --open",
+    "dev": "parcel ./src/index.html",
     "lint": "eslint --fix ./src",
     "build": "parcel build ./src/index.html --experimental-scope-hoisting"
   },
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.2",
+    "bootstrap": "^4.3.1",
     "common-tags": "^1.8.0",
     "jquery": "^3.4.1",
     "knockout": "^3.5.1",

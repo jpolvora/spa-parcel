@@ -16,8 +16,9 @@ export default class {
 
   render() {
     return html`
-    <div data-bind="html: header"></div>
-    <div data-bind="html: content" class="container pageEntry"></div>
-    <div data-bind="html: footer"></div>`
+    <header data-bind="html: header"></header>
+    <main role="main" class="flex-shrink-0" data-bind="html: content"></main>
+    <footer class="footer mt-auto py-3" data-bind="html: footer"></footer>
+    `
   }
 }
