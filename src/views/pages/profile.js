@@ -1,5 +1,3 @@
-export default  {
-  setup() {
-    console.log('profile setup')
-  }
+export default {
+  render: ({ html }) => html``
 }

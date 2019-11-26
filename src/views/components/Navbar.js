@@ -22,7 +22,7 @@ export default {
             <a class="nav-link" href="#/about">About</a>
           </li>
           <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#/register">Register</a>
+            <a class="nav-link" href="#/logout">Logout</a>
           </li>
           <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>

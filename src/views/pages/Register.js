@@ -1,9 +1,7 @@
 import ko from 'knockout'
-import pubsub from '/pubsub.js'
+import pubsub from '/pubsub'
 
 const viewModel = function() {
-  pubsub.publish('login', false)
-
   return {
     email: ko.observable('').extend({ email: true, required: true }),
     password: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
@@ -12,6 +10,7 @@ const viewModel = function() {
       if (!this.email.isValid()) return alert('email inválido')
       if (!this.password.isValid()) return alert('password inválido')
       pubsub.publish('login', true)
+      pubsub.publish('navigate', '/')
       alert('tudo ok')
     }
   }
