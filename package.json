@@ -1,6 +1,6 @@
 {
   "name": "spa-parcel",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Initial setup custom spa-template",
   "private": true,
   "scripts": {
