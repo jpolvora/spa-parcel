@@ -3,7 +3,7 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-26 13:41:14
+ * @ Modified time: 2019-11-26 14:26:13
  */
 
 import $ from 'jquery'
@@ -100,6 +100,7 @@ import { checkLogin } from './services/api'
   const hooks = {
     before(done, params) {
       console.debug('router:before', params)
+      ko.cleanNode()
       const last = router.lastRouteResolved()
       const routeName = (last && last.name) || ''
       const isLoggedIn = dataContext.loggedIn()
@@ -123,6 +124,7 @@ import { checkLogin } from './services/api'
       router.updatePageLinks()
       const data = router.lastRouteResolved()
       dataContext.current(data)
+      ko.applyBindings()
     },
     leave(params) {
       console.debug('router:leave', params)
