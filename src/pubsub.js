@@ -5,18 +5,18 @@ const factory = () => {
   var knownEvents = {}
 
   return {
-    subscribe: function () {
+    subscribe: function() {
       target.on.apply(target, arguments)
     },
-    unsubscribe: function () {
+    unsubscribe: function() {
       target.off.apply(target, arguments)
     },
-    publish: function () {
+    publish: function() {
       var ch = arguments[0]
       knownEvents[ch] = arguments
       target.trigger.apply(target, arguments)
     },
-    listEvents: function () {
+    listEvents: function() {
       return Object.keys(knownEvents)
     }
   }
