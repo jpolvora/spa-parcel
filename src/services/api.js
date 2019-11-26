@@ -3,6 +3,10 @@ import pubsub from '/pubsub'
 
 const externalApi = wretch()
   .url(process.env.API_URL)
+  .options({
+    credentials: 'include',
+    mode: 'cors'
+  })
   .headers({
     Accept: 'application/json',
     'Content-Type': 'application/json',
