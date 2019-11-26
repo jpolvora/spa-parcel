@@ -13,17 +13,20 @@ const viewModel = function() {
       if (!this.email.isValid()) return alert('email inválido')
       if (!this.password.isValid()) return alert('password inválido')
       if (!this.token()) return window.location.reload()
-      const success = await execLogin(this.email(), this.password(), this.token())
-      pubsub.publish('login', success)
-
-      if (success) pubsub.publish('navigate', '/')
-      else {
-        swal({
+      const loginResult = await execLogin(this.email(), this.password(), this.token())
+      if (loginResult.success) {
+        pubsub.publish('login', true)
+        pubsub.publish('navigate', '/')
+      } else {
+        console.error(loginResult.message)
+        pubsub.publish('login', false)
+        await swal({
           title: 'Logon',
-          text: 'Usuário / senha inválida',
+          text: loginResult.message || 'Erro login',
           icon: 'error',
           button: 'Ok'
         })
+        window.location.reload()
       }
     }
   }
@@ -32,7 +35,7 @@ const viewModel = function() {
 export default {
   render: ({ html }) => html`
     <div class="container text-center" id="register">
-      <form class="form-signin" data-bind="submit: validate">
+      <form class="form-signin" data-bind="submit: validate, attr: { 'data-token': token() }">
         <img class="mb-4" src="https://getbootstrap.com/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72" />
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <label for="inputEmail" class="sr-only">Email address</label>
@@ -84,7 +87,18 @@ export default {
   after_render: async () => {
     const vm = viewModel()
     ko.applyBindings(vm, document.getElementById('register'))
-    const token = await getToken()
-    vm.token(token)
+    const result = await getToken()
+    if (result.success && result.token) {
+      vm.token(result.token)
+    } else {
+      await swal({
+        title: 'Logon',
+        text: 'Offline',
+        icon: 'error',
+        button: 'Tentar novamente'
+      })
+
+      window.location.reload()
+    }
   }
 }

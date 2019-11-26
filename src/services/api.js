@@ -1,88 +1,57 @@
-const options = {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-}
+import wretch from 'wretch'
+import pubsub from '/pubsub'
 
-export const getPostsList = async () => {
-  try {
-    const response = await fetch('https://5bb634f6695f8d001496c082.mockapi.io/api/posts', options)
-    const json = await response.json()
-    return json
-  } catch (err) {
-    console.log('Error getting documents', err)
-  }
-}
-
-export const getPost = async id => {
-  try {
-    const response = await fetch('https://5bb634f6695f8d001496c082.mockapi.io/api/posts/' + id, options)
-    const json = await response.json()
-    // console.log(json)
-    return json
-  } catch (err) {
-    console.log('Error getting documents', err)
-  }
-}
+const externalApi = wretch()
+  .url(process.env.API_URL)
+  .headers({
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
+  })
 
 export const checkLogin = async () => {
-  let error = false
-  try {
-    const url = `${process.env.API_URL}/api/user/check`
-    const fetchOptions = {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    }
-
-    const response = await fetch(url, fetchOptions)
-    if (response.status === 200) {
-      const json = await response.json()
-      return {
-        status: (response && Number(response.status)) || 200,
-        success: !!json.success,
-        message: json.message || ''
-      }
-    }
-  } catch (err) {
-    error = err
-  }
-
-  return {
+  const result = {
     success: false,
-    message: error
+    error: false
   }
+  //debugger
+  pubsub.publish('busy', true)
+  await externalApi
+    .url('/api/user/check')
+    .get()
+    .json(json => {
+      console.debug(json)
+      result.success = json.success
+    })
+    .catch(error => {
+      console.error(error)
+      result.error = error
+    })
+
+  pubsub.publish('busy', false)
+
+  return result
 }
 
-export const getToken = async () => {
-  const url = `${process.env.API_URL}/login`
-  try {
-    const fetchOptions = {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    }
-
-    const response = await fetch(url, fetchOptions)
-    if (response.status === 200) {
-      const json = await response.json()
-      return json.token || false
-    }
-    return false
-  } catch (err) {
-    console.error(err)
-    return false
-  }
-}
+export const getToken = async () =>
+  new Promise(resolve =>
+    externalApi
+      .url('/login')
+      .get()
+      .json(json =>
+        resolve({
+          success: json.token || false,
+          token: json.token || '',
+          error: false
+        })
+      )
+      .catch(error => {
+        resolve({
+          success: false,
+          error
+        })
+      })
+  )
 
 export const execLogin = async (username, password, csrf) => {
   const url = `${process.env.API_URL}/api/user/login`
@@ -90,6 +59,7 @@ export const execLogin = async (username, password, csrf) => {
   try {
     response = await fetch(url, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -98,19 +68,19 @@ export const execLogin = async (username, password, csrf) => {
       },
       body: JSON.stringify({
         username,
-        password
+        password,
+        _csrf: csrf
       })
     })
 
     const json = await response.json()
+    const success = Number(response.status) === 200 && json.success
     return {
-      status: (response && Number(response.status)) || 200,
-      success: !!json.success,
-      message: json.message || ''
+      success: success,
+      message: success ? 'ok' : JSON.stringify(json)
     }
   } catch (err) {
     return {
-      status: (response && Number(response.status)) || 500,
       success: false,
       message: err
     }
