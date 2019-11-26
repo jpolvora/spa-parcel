@@ -3,7 +3,7 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-25 22:31:58
+ * @ Modified time: 2019-11-25 23:41:11
  */
 
 import $ from 'jquery'
@@ -46,7 +46,10 @@ import Logout from './views/pages/Logout'
         // await timeout(1000)
         // if (!component) throw new Error('Invalid argument: component')
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
-        const result = await component.render({ html, params })
+        const result = await component.render({
+          html,
+          params
+        })
         if (!result) return router.navigate('/')
 
         dataContext.content(result)
@@ -98,8 +101,16 @@ import Logout from './views/pages/Logout'
     console.log('loggedIn: value changed to:', newValue)
 
     if (newValue) {
-      dataContext.header(Navbar.render({ html }))
-      dataContext.footer(Bottombar.render({ html }))
+      dataContext.header(
+        Navbar.render({
+          html
+        })
+      )
+      dataContext.footer(
+        Bottombar.render({
+          html
+        })
+      )
     } else {
       dataContext.header('')
       dataContext.footer('')

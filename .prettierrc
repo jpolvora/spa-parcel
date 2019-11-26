@@ -1,11 +1,8 @@
 {
   "tabWidth": 2,
-  "printWidth": 120,
+  "printWidth": 200,
   "useTabs": false,
   "semi": false,
   "singleQuote": true,
-  "arrowParens": "avoid",
-  "bracketSpacing": true,
-  "vueIndentScriptAndStyle": true,
-  "parser": "babel"
+  "jsxBracketSameLine": true
 }

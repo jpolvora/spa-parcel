@@ -17,6 +17,10 @@
     "sourceType": "module"
   },
   "rules": {
+    "brace-style": [
+      "error",
+      "1tbs"
+    ],
     "padding-line-between-statements": [
       "warn",
       {
