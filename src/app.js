@@ -3,7 +3,7 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-26 14:26:13
+ * @ Modified time: 2019-11-26 15:19:03
  */
 
 import $ from 'jquery'
@@ -16,6 +16,7 @@ import { html } from 'common-tags'
 import ko from 'knockout'
 import 'knockout.validation'
 import pubsub from './pubsub'
+import Loading from './views/components/Loading'
 import Navbar from './views/components/Navbar.js'
 import Bottombar from './views/components/Bottombar'
 import ShowError from './views/components/ShowError'
@@ -43,10 +44,14 @@ import { checkLogin } from './services/api'
   const renderComponent = component => {
     return async params => {
       try {
-        //const loadingView = Loading.render({ html })
-        //dataContext.content(loadingView)
+        if (!component) throw new Error('Invalid argument: component')
+        let willRender = true
+        if (typeof component.beforeRender === 'function') {
+          willRender = await component.beforeRender(params)
+        }
 
-        // if (!component) throw new Error('Invalid argument: component')
+        if (!willRender) return
+
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
         const result = await component.render({ html, params })
         if (!result) return router.navigate('/')
@@ -81,72 +86,30 @@ import { checkLogin } from './services/api'
     current: ko.observable(),
     loggedIn: ko.observable(false),
 
-    header: ko.observable(),
-    content: ko.observable(),
-    footer: ko.observable()
-  }
-
-  dataContext.loggedIn.subscribe(function(newValue) {
-    console.log('loggedIn: value changed to:', newValue)
-    if (newValue) {
-      dataContext.header(Navbar.render({ html }))
-      dataContext.footer(Bottombar.render({ html }))
-    } else {
-      dataContext.header('')
-      dataContext.footer('')
-    }
-  })
-
-  const hooks = {
-    before(done, params) {
-      console.debug('router:before', params)
-      ko.cleanNode()
-      const last = router.lastRouteResolved()
-      const routeName = (last && last.name) || ''
-      const isLoggedIn = dataContext.loggedIn()
-      console.log('routeName: "%s", isLoggedIn: %s', routeName, isLoggedIn)
-      if (!isLoggedIn) {
-        if (routeName === 'register') {
-          return done()
-        }
-        done(false)
-        return router.navigate('/register')
-      }
-
-      if (routeName !== 'register') {
-        return done()
-      }
-      done(false)
-      return router.navigate('/register')
-    },
-    after(params) {
-      console.debug('router:after', params)
-      router.updatePageLinks()
-      const data = router.lastRouteResolved()
-      dataContext.current(data)
-      ko.applyBindings()
-    },
-    leave(params) {
-      console.debug('router:leave', params)
-    },
-    already(params) {
-      console.debug('router:already', params)
-    }
+    header: ko.observable(Navbar.render({ html })),
+    content: ko.observable(Loading.render({ html })),
+    footer: ko.observable(Bottombar.render({ html }))
   }
 
   const router = routerFactory()
 
-  router
-    .on({
-      '/': { as: 'home', uses: renderComponent(Home), hooks },
-      '/about': { as: 'about', uses: renderComponent(About), hooks },
-      '/logout': { as: 'logout', uses: renderComponent(Logout), hooks },
-      '/register': { as: 'register', uses: renderComponent(Register), hooks }
-    })
-    .notFound(function() {
-      console.log('route not found!')
-      router.navigate('/')
-    })
+  router.hooks({
+    before(done) {
+      return done()
+    },
+    after(params) {
+      const last = router.lastRouteResolved()
+      dataContext.current({ name: last.name, url: last.url, params: params })
+    }
+  })
+
+  router.on({
+    '/': { as: 'home', uses: renderComponent(Home) },
+    '/about': { as: 'about', uses: renderComponent(About) },
+    '/logout': { as: 'logout', uses: renderComponent(Logout) },
+    '/register': { as: 'register', uses: renderComponent(Register) },
+    '*': renderComponent(Home)
+  })
 
   $(async () => {
     Pace.start()
@@ -163,13 +126,9 @@ import { checkLogin } from './services/api'
 
     router.resolve()
 
-    dataContext.loggedIn(isLoggedIn)
-    if (!isLoggedIn) {
-      router.navigate('#/register')
-    }
-
     pubsub.subscribe('busy', (_, value) => {
       console.log('pubsub:busy', value)
+      return value ? Pace.start() : Pace.stop()
     })
 
     pubsub.subscribe('navigate', (_, value) => {

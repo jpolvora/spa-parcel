@@ -71,8 +71,8 @@ export const execLogin = async (username, password, csrf) => {
         'x-csrf-token': csrf
       },
       body: JSON.stringify({
-        username,
-        password,
+        usuario: username,
+        senha: password,
         _csrf: csrf
       })
     })
@@ -81,7 +81,7 @@ export const execLogin = async (username, password, csrf) => {
     const success = Number(response.status) === 200 && json.success
     return {
       success: success,
-      message: success ? 'ok' : JSON.stringify(json)
+      message: json.message || 'ok'
     }
   } catch (err) {
     return {

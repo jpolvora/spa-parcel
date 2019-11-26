@@ -5,15 +5,16 @@ import swal from 'sweetalert'
 
 const viewModel = function() {
   return {
-    email: ko.observable('').extend({ email: true, required: true }),
+    //email: ko.observable('').extend({ email: true, required: true }),
+    username: ko.observable('').extend({ required: true, minLength: 4, maxLength: 32 }),
     password: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
     token: ko.observable(''),
 
     validate: async function() {
-      if (!this.email.isValid()) return alert('email inválido')
-      if (!this.password.isValid()) return alert('password inválido')
+      if (!this.username.isValid()) return alert('usuário inválido')
+      if (!this.password.isValid()) return alert('senha inválida')
       if (!this.token()) return window.location.reload()
-      const loginResult = await execLogin(this.email(), this.password(), this.token())
+      const loginResult = await execLogin(this.username(), this.password(), this.token())
       if (loginResult.success) {
         pubsub.publish('login', true)
         pubsub.publish('navigate', '/')
@@ -37,9 +38,9 @@ export default {
     <div class="container text-center" id="register">
       <form class="form-signin" data-bind="submit: validate, attr: { 'data-token': token() }">
         <img class="mb-4" src="https://getbootstrap.com/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72" />
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" data-bind="value: email" required autofocus />
+        <h1 class="h3 mb-3 font-weight-normal">Log in</h1>
+        <label for="inputEmail" class="sr-only">Username</label>
+        <input type="text" id="inputEmail" class="form-control" placeholder="Username" data-bind="value: username" required autofocus />
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" data-bind="value: password" required />
         <div class="checkbox mb-3">
