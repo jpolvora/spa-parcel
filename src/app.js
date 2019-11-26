@@ -3,12 +3,12 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-26 11:28:04
+ * @ Modified time: 2019-11-26 13:41:14
  */
 
 import $ from 'jquery'
-//import swal from 'sweetalert'
-import './vendor/pace.min.js'
+import swal from 'sweetalert'
+import Pace from './vendor/pace.min.js'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import 'gasparesganga-jquery-loading-overlay/dist/loadingoverlay'
 import Navigo from 'navigo'
@@ -147,6 +147,7 @@ import { checkLogin } from './services/api'
     })
 
   $(async () => {
+    Pace.start()
     ko.applyBindings(dataContext)
 
     let isLoggedIn = false
@@ -167,7 +168,6 @@ import { checkLogin } from './services/api'
 
     pubsub.subscribe('busy', (_, value) => {
       console.log('pubsub:busy', value)
-      $.LoadingOverlay(value ? 'show' : 'hide')
     })
 
     pubsub.subscribe('navigate', (_, value) => {
@@ -175,16 +175,19 @@ import { checkLogin } from './services/api'
       router.navigate(value)
     })
 
+    /** sets the header content */
     pubsub.subscribe('header', (_, value) => {
       console.log('pubsub:header', value)
       dataContext.header(value)
     })
 
+    /** sets the footer content */
     pubsub.subscribe('footer', (_, value) => {
       console.log('pubsub:footer', value)
       dataContext.footer(value)
     })
 
+    /** sets the main content */
     pubsub.subscribe('content', (_, value) => {
       console.log('pubsub:content', value)
       dataContext.content(value)
