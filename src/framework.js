@@ -7,13 +7,16 @@ import 'knockout.validation'
 
 ko.validation.rules.pattern.message = 'Invalid.'
 
-ko.validation.init({
-  registerExtenders: true,
-  messagesOnModified: true,
-  insertMessages: true,
-  parseInputAttributes: true,
-  messageTemplate: null
-}, true)
+ko.validation.init(
+  {
+    registerExtenders: true,
+    messagesOnModified: true,
+    insertMessages: true,
+    parseInputAttributes: true,
+    messageTemplate: null
+  },
+  true
+)
 
 const timeout = ms => new Promise(res => setTimeout(res, ms))
 
@@ -28,14 +31,14 @@ const routerFactory = () => {
   const router = new Navigo(root, useHash, hash)
 
   router.hooks({
-    before: function (done, params) {
+    before: function(done, params) {
       console.log('router before', params)
       return done()
     },
-    after: function (params) {
+    after: function(params) {
       console.log('router after', params)
     },
-    leave: function (params) {
+    leave: function(params) {
       console.log('router leave', params)
     }
   })
@@ -77,7 +80,7 @@ export default class App {
   }
 
   renderComponent(component) {
-    return async (params) => {
+    return async params => {
       try {
         const loadingView = Loading.render()
         this.shell.data.content(loadingView)
