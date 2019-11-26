@@ -24,6 +24,7 @@
         "next": "function"
       }
     ],
+    "no-unused-vars": "warn",
     "prefer-const": [
       "error",
       {
