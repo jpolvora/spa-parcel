@@ -1,17 +1,30 @@
 import ko from 'knockout'
 import pubsub from '/pubsub'
+import { getToken, execLogin } from '/services/api'
+import swal from 'sweetalert'
 
 const viewModel = function() {
   return {
     email: ko.observable('').extend({ email: true, required: true }),
     password: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
+    token: ko.observable(''),
 
-    validate: function() {
+    validate: async function() {
       if (!this.email.isValid()) return alert('email inválido')
       if (!this.password.isValid()) return alert('password inválido')
-      pubsub.publish('login', true)
-      pubsub.publish('navigate', '/')
-      alert('tudo ok')
+      if (!this.token()) return window.location.reload()
+      const success = await execLogin(this.email(), this.password(), this.token())
+      pubsub.publish('login', success)
+
+      if (success) pubsub.publish('navigate', '/')
+      else {
+        swal({
+          title: 'Logon',
+          text: 'Usuário / senha inválida',
+          icon: 'error',
+          button: 'Ok'
+        })
+      }
     }
   }
 }
@@ -69,6 +82,9 @@ export default {
     </div>
   `,
   after_render: async () => {
-    ko.applyBindings(viewModel, document.getElementById('register'))
+    const vm = viewModel()
+    ko.applyBindings(vm, document.getElementById('register'))
+    const token = await getToken()
+    vm.token(token)
   }
 }

@@ -3,10 +3,11 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-25 23:41:11
+ * @ Modified time: 2019-11-26 04:17:54
  */
 
 import $ from 'jquery'
+import swal from 'sweetalert'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import Navigo from 'navigo'
 import { html } from 'common-tags'
@@ -23,6 +24,7 @@ import About from './views/pages/About'
 import PostShow from './views/pages/PostShow'
 import Register from './views/pages/Register'
 import Logout from './views/pages/Logout'
+import { checkLogin } from './services/api'
 ;(async () => {
   ko.validation.rules.pattern.message = 'Invalid.'
   ko.validation.init(
@@ -46,15 +48,12 @@ import Logout from './views/pages/Logout'
         // await timeout(1000)
         // if (!component) throw new Error('Invalid argument: component')
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
-        const result = await component.render({
-          html,
-          params
-        })
+        const result = await component.render({ html, params })
         if (!result) return router.navigate('/')
 
         dataContext.content(result)
         if (typeof component.after_render === 'function') {
-          await timeout(1000)
+          await timeout(100)
           await component.after_render(params)
         }
       } catch (e) {
@@ -99,18 +98,9 @@ import Logout from './views/pages/Logout'
 
   dataContext.loggedIn.subscribe(function(newValue) {
     console.log('loggedIn: value changed to:', newValue)
-
     if (newValue) {
-      dataContext.header(
-        Navbar.render({
-          html
-        })
-      )
-      dataContext.footer(
-        Bottombar.render({
-          html
-        })
-      )
+      dataContext.header(Navbar.render({ html }))
+      dataContext.footer(Bottombar.render({ html }))
     } else {
       dataContext.header('')
       dataContext.footer('')
@@ -119,23 +109,39 @@ import Logout from './views/pages/Logout'
 
   const hooks = {
     before(done) {
-      const isLoggedIn = dataContext.loggedIn()
-      if (isLoggedIn) return done()
-      done(false)
-      router.navigate('#/register')
+      return done()
+    },
+    after() {
+      router.updatePageLinks()
     }
   }
 
   const router = routerFactory()
-  router.on('/', renderComponent(Home), hooks)
+  router.on(renderComponent(Home), hooks)
   router.on('/about', renderComponent(About), hooks)
-  router.on('/register', renderComponent(Register))
+  router.on('/register', renderComponent(Register), hooks)
   router.on('/logout', renderComponent(Logout))
   router.on('/p/:id', renderComponent(PostShow), hooks)
   router.notFound(renderComponent(Error404))
-  router.resolve()
 
   $(async () => {
+    const result = await checkLogin()
+    console.debug(result)
+
+    const isLoggedIn = !!result.success
+    dataContext.loggedIn(isLoggedIn)
+    router.resolve()
+
+    if (!isLoggedIn) {
+      router.navigate('#/register')
+      swal({
+        title: 'Logon',
+        text: 'Faça o login',
+        icon: 'error',
+        button: 'Ok'
+      })
+    }
+
     ko.applyBindings(dataContext)
 
     pubsub.subscribe('navigate', (_, value) => {

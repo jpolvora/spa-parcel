@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html class="h-100">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SPArcel</title>
-    <link rel="stylesheet" type="text/css" href="./app.css">
+    <link rel="stylesheet" type="text/css" href="./app.css" />
     <script src="./app.js"></script>
-</head>
+  </head>
 
-<body class="d-flex flex-column h-100" id="app">
+  <body class="d-flex flex-column h-100" id="app" data-api="<%process.env.API_URL%>">
     <header data-bind="html: header"></header>
     <main role="main" class="flex-shrink-0" data-bind="html: content"></main>
     <footer class="footer mt-auto py-3" data-bind="html: footer"></footer>
-</body>
-
+  </body>
 </html>
