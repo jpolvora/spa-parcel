@@ -3,14 +3,13 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-26 15:19:03
+ * @ Modified time: 2019-11-27 11:33:04
  */
 
 import $ from 'jquery'
+import 'gasparesganga-jquery-loading-overlay'
 import swal from 'sweetalert'
-import Pace from './vendor/pace.min.js'
 import 'bootstrap/dist/js/bootstrap.bundle'
-import 'gasparesganga-jquery-loading-overlay/dist/loadingoverlay'
 import Navigo from 'navigo'
 import { html } from 'common-tags'
 import ko from 'knockout'
@@ -25,7 +24,6 @@ import About from './views/pages/About'
 //import PostShow from './views/pages/PostShow'
 import Register from './views/pages/Register'
 import Logout from './views/pages/Logout'
-import { checkLogin } from './services/api'
 ;(async () => {
   ko.validation.rules.pattern.message = 'Invalid.'
   ko.validation.init(
@@ -47,19 +45,19 @@ import { checkLogin } from './services/api'
         if (!component) throw new Error('Invalid argument: component')
         let willRender = true
         if (typeof component.beforeRender === 'function') {
-          willRender = await component.beforeRender(params)
+          willRender = await component.beforeRender({ params, dataContext })
         }
 
-        if (!willRender) return
+        if (willRender === false) return
 
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
         const result = await component.render({ html, params })
         if (!result) return router.navigate('/')
 
         dataContext.content(result)
-        if (typeof component.after_render === 'function') {
+        if (typeof component.afterRender === 'function') {
           await timeout(100)
-          await component.after_render(params)
+          await component.afterRender(params)
         }
       } catch (e) {
         console.error(e)
@@ -112,23 +110,28 @@ import { checkLogin } from './services/api'
   })
 
   $(async () => {
-    Pace.start()
     ko.applyBindings(dataContext)
-
-    let isLoggedIn = false
-    try {
-      const result = await checkLogin()
-      console.debug(result)
-      isLoggedIn = !!result.success
-    } catch (error) {
-      console.error(error)
-    }
 
     router.resolve()
 
+    pubsub.subscribe('showMessage', (_, value) => {
+      console.log('pubsub:busy', value)
+      //icons: ['warning', 'error', 'success', 'info']
+      const options = {
+        text: (value && value.text) || value || 'empty message',
+        title: (value && value.title) || 'Mensagem',
+        icon: (value && value.icon) || 'info'
+      }
+      const promise = swal(options)
+      if (value && value.callback && typeof value.callback === 'function') {
+        promise.then(value.callback)
+      }
+    })
+
     pubsub.subscribe('busy', (_, value) => {
       console.log('pubsub:busy', value)
-      return value ? Pace.start() : Pace.stop()
+      dataContext.isBusy(value)
+      $('#shell').LoadingOverlay(value ? 'show' : 'hide')
     })
 
     pubsub.subscribe('navigate', (_, value) => {

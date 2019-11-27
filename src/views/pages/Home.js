@@ -1,12 +1,32 @@
+import { checkLogin } from '/services/api'
+import pubsub from '/pubsub'
+
 export default {
   render: ({ html }) => html`
     <div class="container">
-      <h1 class="mt-5">Sticky footer with fixed navbar</h1>
+      <h1 class="mt-5">Welcome</h1>
       <p class="lead">
-        Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with
-        <code>padding-top: 60px;</code> on the <code>main &gt; .container</code>.
+        Bem vindo
       </p>
-      <p>Back to <a href="/docs/4.3/examples/sticky-footer/">the default sticky footer</a> minus the navbar.</p>
     </div>
-  `
+  `,
+  afterRender: async () => {
+    const result = await checkLogin()
+    if (result.error) {
+      const errorMessage = `Ocorreu um erro ao verificar credenciais: ${result.error}`
+      pubsub.publish('showMessage', {
+        text: errorMessage,
+        title: 'CheckLogin',
+        icon: 'error',
+        callback: () => pubsub.publish('navigate', '/register')
+      })
+    } else {
+      const infoMessage = `Olá, ${(result.json && result.json.user && result.json.user.fullName) || 'Erro'}`
+      pubsub.publish('showMessage', {
+        text: infoMessage,
+        title: 'Login',
+        icon: 'info'
+      })
+    }
+  }
 }

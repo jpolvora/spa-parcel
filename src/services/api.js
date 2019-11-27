@@ -1,6 +1,8 @@
 import wretch from 'wretch'
 import pubsub from '/pubsub'
 
+const delay = ms => new Promise(res => setTimeout(res, ms))
+
 const externalApi = wretch()
   .url(process.env.API_URL)
   .options({
@@ -13,23 +15,36 @@ const externalApi = wretch()
     'X-Requested-With': 'XMLHttpRequest'
   })
 
-export const checkLogin = async () => {
+async function getJson(url, token = '') {
+  console.info('getJson', url, token)
   const result = {
     success: false,
-    error: false
+    error: false,
+    json: false,
+    status: 0
   }
-  //debugger
+
   pubsub.publish('busy', true)
+
+  await delay(3000)
+
   await externalApi
-    .url('/api/user/check')
+    .url(url)
+    .options({
+      credentials: 'include'
+    })
     .get()
     .json(json => {
       console.debug(json)
       result.success = json.success
+      result.error = false
+      result.json = json
     })
     .catch(error => {
       console.error(error)
+      result.success = false
       result.error = error
+      result.json = false
     })
 
   pubsub.publish('busy', false)
@@ -37,56 +52,54 @@ export const checkLogin = async () => {
   return result
 }
 
-export const getToken = async () =>
-  new Promise(resolve =>
-    externalApi
-      .url('/login')
-      .get()
-      .json(json =>
-        resolve({
-          success: json.token || false,
-          token: json.token || '',
-          error: false
-        })
-      )
-      .catch(error => {
-        resolve({
-          success: false,
-          error
-        })
-      })
-  )
+async function postJson(url, token = '', body = {}) {
+  const result = {
+    success: false,
+    error: false,
+    json: false,
+    status: 0
+  }
+  pubsub.publish('busy', true)
 
-export const execLogin = async (username, password, csrf) => {
-  const url = `${process.env.API_URL}/api/user/login`
-  let response = undefined
-  try {
-    response = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'x-csrf-token': csrf
-      },
-      body: JSON.stringify({
-        usuario: username,
-        senha: password,
-        _csrf: csrf
-      })
+  await externalApi
+    .url(url)
+    .options({
+      credentials: 'include'
+    })
+    .body(body)
+    .post()
+    .headers({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'x-csrf-token': token
+    })
+    .response(res => {
+      result.status = Number(res.status) || 0
+    })
+    .json(json => {
+      console.debug(json)
+      result.success = json.success
+      result.error = false
+      result.json = json
+    })
+    .catch(error => {
+      console.error(error)
+      result.success = false
+      result.error = error
+      result.json = false
     })
 
-    const json = await response.json()
-    const success = Number(response.status) === 200 && json.success
-    return {
-      success: success,
-      message: json.message || 'ok'
-    }
-  } catch (err) {
-    return {
-      success: false,
-      message: err
-    }
-  }
+  pubsub.publish('busy', false)
+
+  return result
 }
+
+export const checkLogin = () => getJson('/api/user/check')
+export const getToken = () => getJson('/login')
+
+export const execLogin = (usuario, senha, token) =>
+  postJson('/api/user/login', token, {
+    usuario,
+    senha
+  })

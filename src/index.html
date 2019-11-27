@@ -10,7 +10,7 @@
 
   <body class="d-flex flex-column h-100" id="app" data-bind="attr: { 'data-title': current() ? current().name : '', 'data-url': current() ? current().url : '', 'data-login': loggedIn() }">
     <header data-bind="html: header"></header>
-    <main role="main" class="flex-shrink-0" data-bind="html: content"></main>
+    <main id="shell" role="main" class="flex-shrink-0" data-bind="html: content"></main>
     <footer class="footer mt-auto py-3" data-bind="html: footer"></footer>
   </body>
 </html>

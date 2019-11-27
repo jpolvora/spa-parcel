@@ -3,37 +3,44 @@ import pubsub from '/pubsub'
 import { getToken, execLogin } from '/services/api'
 import swal from 'sweetalert'
 
-const viewModel = function() {
-  return {
-    //email: ko.observable('').extend({ email: true, required: true }),
-    username: ko.observable('').extend({ required: true, minLength: 4, maxLength: 32 }),
-    password: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
-    token: ko.observable(''),
+const viewModel = {
+  //email: ko.observable('').extend({ email: true, required: true }),
+  username: ko.observable('').extend({ required: true, minLength: 4, maxLength: 32 }),
+  password: ko.observable('').extend({ required: true, minLength: 6, maxLength: 12 }),
+  token: ko.observable(''),
 
-    validate: async function() {
-      if (!this.username.isValid()) return alert('usuário inválido')
-      if (!this.password.isValid()) return alert('senha inválida')
-      if (!this.token()) return window.location.reload()
-      const loginResult = await execLogin(this.username(), this.password(), this.token())
-      if (loginResult.success) {
-        pubsub.publish('login', true)
-        pubsub.publish('navigate', '/')
-      } else {
-        console.error(loginResult.message)
-        pubsub.publish('login', false)
-        await swal({
-          title: 'Logon',
-          text: loginResult.message || 'Erro login',
-          icon: 'error',
-          button: 'Ok'
-        })
-        window.location.reload()
-      }
+  async validate() {
+    if (!this.username.isValid()) return alert('usuário inválido')
+    if (!this.password.isValid()) return alert('senha inválida')
+    if (!this.token()) return window.location.reload()
+    const loginResult = await execLogin(this.username(), this.password(), this.token())
+    if (loginResult.success) {
+      pubsub.publish('login', true)
+      pubsub.publish('navigate', '/')
+    } else {
+      console.error(loginResult.message)
+      pubsub.publish('login', false)
+      await swal({
+        title: 'Logon',
+        text: loginResult.message || 'Erro login',
+        icon: 'error',
+        button: 'Ok'
+      })
+      window.location.reload()
     }
+  },
+
+  reset() {
+    viewModel.username('')
+    viewModel.password('')
+    viewModel.token('')
+    return
   }
 }
 
 export default {
+  beforeRender: () => viewModel.reset(),
+
   render: ({ html }) => html`
     <div class="container text-center" id="register">
       <form class="form-signin" data-bind="submit: validate, attr: { 'data-token': token() }">
@@ -85,21 +92,24 @@ export default {
       </style>
     </div>
   `,
-  after_render: async () => {
-    const vm = viewModel()
-    ko.applyBindings(vm, document.getElementById('register'))
-    const result = await getToken()
-    if (result.success && result.token) {
-      vm.token(result.token)
-    } else {
-      await swal({
-        title: 'Logon',
-        text: 'Offline',
-        icon: 'error',
-        button: 'Tentar novamente'
-      })
 
-      window.location.reload()
+  afterRender: async () => {
+    ko.applyBindings(viewModel, document.getElementById('register'))
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const result = await getToken()
+
+      if (result.success && result.token) {
+        viewModel.token(result.token)
+        break
+      } else {
+        await swal({
+          title: 'Logon',
+          text: 'Offline',
+          icon: 'error',
+          button: 'Tentar novamente'
+        })
+      }
     }
   }
 }
