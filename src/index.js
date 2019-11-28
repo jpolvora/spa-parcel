@@ -3,14 +3,14 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-27 15:03:43
+ * @ Modified time: 2019-11-28 09:24:04
  */
 
 import $ from 'jquery'
+import page from 'page'
 import 'gasparesganga-jquery-loading-overlay'
 import swal from 'sweetalert'
 import 'bootstrap/dist/js/bootstrap.bundle'
-import Navigo from 'navigo'
 import { html } from 'common-tags'
 import ko from 'knockout'
 import 'knockout.validation'
@@ -24,6 +24,7 @@ import About from './views/pages/About'
 //import PostShow from './views/pages/PostShow'
 import Register from './views/pages/Register'
 import Logout from './views/pages/Logout'
+import Error404 from './views/pages/Error404'
 ;(async () => {
   ko.validation.rules.pattern.message = 'Invalid.'
   ko.validation.init(
@@ -40,27 +41,27 @@ import Logout from './views/pages/Logout'
   const timeout = ms => new Promise(res => setTimeout(res, ms))
 
   const renderComponent = component => {
-    return async params => {
+    return async ctx => {
       try {
         if (!component) throw new Error('Invalid argument: component')
-        let willRender = true
+        let beforeRenderResult = true
+
         if (typeof component.beforeRender === 'function') {
-          willRender = await component.beforeRender({ params, dataContext })
+          beforeRenderResult = await component.beforeRender({ dataContext, ctx })
         }
 
-        if (willRender === false) return
-        if (typeof willRender === 'string') {
-          return router.navigate(willRender)
+        if (beforeRenderResult === false) return false
+        if (typeof beforeRenderResult === 'string') {
+          return page.redirect(beforeRenderResult)
         }
 
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
-        const result = await component.render({ html, params })
-        if (!result) return router.navigate('/')
-
+        const result = await component.render({ html, ctx })
         dataContext.content(result)
+
         if (typeof component.afterRender === 'function') {
           await timeout(100)
-          await component.afterRender(params)
+          await component.afterRender(ctx)
         }
       } catch (e) {
         console.error(e)
@@ -74,14 +75,6 @@ import Logout from './views/pages/Logout'
     return dataContext.content(html)
   }
 
-  const routerFactory = () => {
-    const root = ''
-    const useHash = true // Defaults to: false
-    const hash = '#' // Defaults to: '#'
-    const router = new Navigo(root, useHash, hash)
-    return router
-  }
-
   const dataContext = {
     isBusy: ko.observable(false),
     current: ko.observable(),
@@ -92,65 +85,41 @@ import Logout from './views/pages/Logout'
     footer: ko.observable(Bottombar.render({ html }))
   }
 
-  const router = routerFactory()
+  //page.base('/')
+  page('/', renderComponent(Home))
+  page('/about', renderComponent(About))
+  page('/logout', renderComponent(Logout))
+  page('/register', renderComponent(Register))
+  page('*', renderComponent(Error404))
 
-  router.hooks({
-    before(done, params) {
-      console.log('leave', params)
-      // const current = dataContext.current()
-      // debugger
-      // if (current && current.name) {
-      //   const node = $(current.name)
-      //   if (node && node.length > 0) {
-      //     ko.cleanNode(node[0])
-      //   }
-      // }
-      return done()
-    },
-    after(params) {
-      const last = router.lastRouteResolved()
-      if (last) {
-        dataContext.current({ name: last.name, url: last.url, params: params })
-      }
+  const showMessage = async value => {
+    //icons: ['warning', 'error', 'success', 'info']
+    const options = {
+      text: (value && value.text) || value || 'empty message',
+      title: (value && value.title) || 'Mensagem',
+      icon: (value && value.icon) || 'info'
     }
-  })
-
-  router.on({
-    '/': { as: 'home', uses: renderComponent(Home) },
-    '/about': { as: 'about', uses: renderComponent(About) },
-    '/logout': { as: 'logout', uses: renderComponent(Logout) },
-    '/register': { as: 'register', uses: renderComponent(Register) },
-    '*': renderComponent(Home)
-  })
+    const promise = swal(options)
+    if (value && value.callback && typeof value.callback === 'function') {
+      promise.then(value.callback)
+    }
+  }
 
   $(async () => {
-    ko.applyBindings(dataContext)
-
-    router.resolve()
-
     pubsub.subscribe('showMessage', (_, value) => {
       console.log('pubsub:busy', value)
-      //icons: ['warning', 'error', 'success', 'info']
-      const options = {
-        text: (value && value.text) || value || 'empty message',
-        title: (value && value.title) || 'Mensagem',
-        icon: (value && value.icon) || 'info'
-      }
-      const promise = swal(options)
-      if (value && value.callback && typeof value.callback === 'function') {
-        promise.then(value.callback)
-      }
+      return showMessage(value || '')
     })
 
     pubsub.subscribe('busy', (_, value) => {
       console.log('pubsub:busy', value)
       dataContext.isBusy(value)
-      $('#shell').LoadingOverlay(value ? 'show' : 'hide')
+      $('#main').LoadingOverlay(value ? 'show' : 'hide')
     })
 
     pubsub.subscribe('navigate', (_, value) => {
       console.log('pubsub:navigate', value)
-      router.navigate(value)
+      page(value)
     })
 
     /** sets the header content */
@@ -175,5 +144,9 @@ import Logout from './views/pages/Logout'
       console.log('pubsub:login', value)
       dataContext.loggedIn(value === true)
     })
+
+    ko.applyBindings(dataContext, $('#app')[0])
+
+    page()
   })
 })()

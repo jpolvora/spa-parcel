@@ -13,27 +13,26 @@ const viewModel = {
     if (!this.username.isValid()) return alert('usuário inválido')
     if (!this.password.isValid()) return alert('senha inválida')
     if (!this.token()) return window.location.reload()
-    console.log(this.token())
+
+    //console.log(this.token())
     const loginResult = await execLogin(this.username(), this.password(), this.token())
 
-    if (loginResult.success) {
-      pubsub.publish('navigate', '/')
-    } else {
-      await swal({
-        title: 'Logon',
-        text: (loginResult.json && loginResult.json.error) || (loginResult.error && loginResult.error.text) || loginResult.error || 'Erro login',
-        icon: 'error',
-        button: 'Ok'
-      })
-      window.location.reload()
-    }
+    if (loginResult.success) return pubsub.publish('navigate', '/')
+
+    await swal({
+      title: 'Logon',
+      text: (loginResult.json && loginResult.json.error) || (loginResult.error && loginResult.error.text) || loginResult.error || 'Erro login',
+      icon: 'error',
+      button: 'Ok'
+    })
+    window.location.reload()
   },
 
   reset() {
     viewModel.username('')
     viewModel.password('')
     viewModel.token('')
-    return
+    return true
   }
 }
 

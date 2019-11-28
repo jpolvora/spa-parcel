@@ -3,15 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <posthtml-head-elements></posthtml-head-elements>
+    <posthtml-head-elements>
+      <!-- posthtml.config.js -->
+    </posthtml-head-elements>
     <title>SPArcel</title>
-    <link rel="stylesheet" type="text/css" href="./app.css" />
-    <script src="./app.js"></script>
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <script src="./index.js"></script>
   </head>
 
   <body class="d-flex flex-column h-100" id="app" data-bind="attr: { 'data-title': current() ? current().name : '', 'data-url': current() ? current().url : '', 'data-login': loggedIn() }">
     <header data-bind="html: header"></header>
-    <main id="shell" role="main" class="flex-shrink-0" data-bind="html: content"></main>
+    <main id="main" role="main" class="flex-shrink-0" data-bind="html: content"></main>
     <footer class="footer mt-auto py-3" data-bind="html: footer"></footer>
   </body>
 </html>
