@@ -37,6 +37,11 @@ async function getJson(url, token = '') {
 
   await externalApi
     .url(url)
+    .options({
+      headers: {
+        'x-csrf-token': token
+      }
+    })
     .get()
     .json(json => {
       console.debug(json)
@@ -73,7 +78,7 @@ async function postJson(url, token = '', body = {}) {
     .url(url)
     .options({
       headers: {
-        'x-csrf-token': token
+        Authorization: token
       }
     })
     .body(body)
@@ -98,7 +103,7 @@ async function postJson(url, token = '', body = {}) {
 }
 
 export const checkLogin = () => getJson('/api/user/check')
-export const getToken = () => getJson('/login')
+export const getToken = () => getJson('/api/user/login')
 
 export const execLogin = (usuario, senha, token) =>
   postJson('/api/user/login', token, {

@@ -5,15 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "browser-preview",
-      "name": "Browser Preview: Attach",
-      "request": "attach"
-    },
-    {
-      "type": "browser-preview",
+      "type": "chrome",
       "request": "launch",
-      "name": "Browser Preview: Launch",
-      "url": "http://localhost:1234"
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:1234",
+      "webRoot": "${workspaceFolder}/dist",
+      "breakOnLoad": true,
+      "sourceMapPathOverrides": {
+        "../*": "${webRoot}/*"
+      }
     }
   ]
 }

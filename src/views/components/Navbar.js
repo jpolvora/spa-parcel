@@ -8,13 +8,13 @@ export default {
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#/about">About</a>
+            <a class="nav-link" href="/about">About</a>
           </li>
           <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-            <a class="nav-link" href="#/logout">Logout</a>
+            <a class="nav-link" href="/logout">Logout</a>
           </li>
           <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>

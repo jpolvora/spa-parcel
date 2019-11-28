@@ -2,5 +2,10 @@
   "editor.formatOnType": false,
   "editor.formatOnSave": true,
   "editor.formatOnPaste": false,
-  "editor.renderFinalNewline": true
+  "editor.renderFinalNewline": true,
+  "typescript.tsc.autoDetect": "off",
+  "grunt.autoDetect": "off",
+  "jake.autoDetect": "off",
+  "gulp.autoDetect": "off",
+  "npm.autoDetect": "on"
 }

@@ -3,13 +3,14 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-28 09:24:04
+ * @ Modified time: 2019-11-28 15:15:57
  */
 
 import $ from 'jquery'
 import page from 'page'
 import 'gasparesganga-jquery-loading-overlay'
 import swal from 'sweetalert'
+import toastr from 'toastr'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import { html } from 'common-tags'
 import ko from 'knockout'
@@ -106,6 +107,12 @@ import Error404 from './views/pages/Error404'
   }
 
   $(async () => {
+    ko.applyBindings(dataContext, $('#app')[0])
+
+    toastr.info('Bem vindo', 'Ready', {})
+
+    page()
+
     pubsub.subscribe('showMessage', (_, value) => {
       console.log('pubsub:busy', value)
       return showMessage(value || '')
@@ -113,7 +120,7 @@ import Error404 from './views/pages/Error404'
 
     pubsub.subscribe('busy', (_, value) => {
       console.log('pubsub:busy', value)
-      dataContext.isBusy(value)
+      dataContext.isBusy(!!value)
       $('#main').LoadingOverlay(value ? 'show' : 'hide')
     })
 
@@ -144,9 +151,5 @@ import Error404 from './views/pages/Error404'
       console.log('pubsub:login', value)
       dataContext.loggedIn(value === true)
     })
-
-    ko.applyBindings(dataContext, $('#app')[0])
-
-    page()
   })
 })()
