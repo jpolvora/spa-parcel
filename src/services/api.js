@@ -3,6 +3,14 @@ import pubsub from '/pubsub'
 
 const delay = ms => new Promise(res => setTimeout(res, ms))
 
+const safeJson = str => {
+  try {
+    return JSON.parse(str)
+  } catch (error) {
+    return false
+  }
+}
+
 const externalApi = wretch()
   .url(process.env.API_URL)
   .options({
@@ -20,31 +28,28 @@ async function getJson(url, token = '') {
   const result = {
     success: false,
     error: false,
-    json: false,
-    status: 0
+    json: false
   }
 
   pubsub.publish('busy', true)
 
-  await delay(3000)
+  await delay(100)
 
   await externalApi
     .url(url)
-    .options({
-      credentials: 'include'
-    })
     .get()
     .json(json => {
       console.debug(json)
-      result.success = json.success
+      result.success = true
       result.error = false
       result.json = json
     })
     .catch(error => {
-      console.error(error)
+      const json = (error && error.text && safeJson(error.text)) || {}
+      console.error(json || (error && error.text))
       result.success = false
       result.error = error
-      result.json = false
+      result.json = json
     })
 
   pubsub.publish('busy', false)
@@ -53,41 +58,38 @@ async function getJson(url, token = '') {
 }
 
 async function postJson(url, token = '', body = {}) {
+  console.info('postJson', url, token, body)
   const result = {
     success: false,
     error: false,
-    json: false,
-    status: 0
+    json: false
   }
+
   pubsub.publish('busy', true)
+
+  await delay(100)
 
   await externalApi
     .url(url)
     .options({
-      credentials: 'include'
+      headers: {
+        'x-csrf-token': token
+      }
     })
     .body(body)
     .post()
-    .headers({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'x-csrf-token': token
-    })
-    .response(res => {
-      result.status = Number(res.status) || 0
-    })
     .json(json => {
       console.debug(json)
-      result.success = json.success
+      result.success = true
       result.error = false
       result.json = json
     })
     .catch(error => {
-      console.error(error)
+      const json = (error && error.text && safeJson(error.text)) || {}
+      console.error(json || (error && error.text))
       result.success = false
       result.error = error
-      result.json = false
+      result.json = json
     })
 
   pubsub.publish('busy', false)

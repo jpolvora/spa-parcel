@@ -3,7 +3,7 @@
  * @ Create Time: 2019-11-21 15:24:24
  * @ Description:
  * @ Modified by: Jone Pólvora
- * @ Modified time: 2019-11-27 11:33:04
+ * @ Modified time: 2019-11-27 15:03:43
  */
 
 import $ from 'jquery'
@@ -49,6 +49,9 @@ import Logout from './views/pages/Logout'
         }
 
         if (willRender === false) return
+        if (typeof willRender === 'string') {
+          return router.navigate(willRender)
+        }
 
         if (typeof component.render !== 'function') throw new Error('Invalid component: render function is required')
         const result = await component.render({ html, params })
@@ -92,12 +95,23 @@ import Logout from './views/pages/Logout'
   const router = routerFactory()
 
   router.hooks({
-    before(done) {
+    before(done, params) {
+      console.log('leave', params)
+      // const current = dataContext.current()
+      // debugger
+      // if (current && current.name) {
+      //   const node = $(current.name)
+      //   if (node && node.length > 0) {
+      //     ko.cleanNode(node[0])
+      //   }
+      // }
       return done()
     },
     after(params) {
       const last = router.lastRouteResolved()
-      dataContext.current({ name: last.name, url: last.url, params: params })
+      if (last) {
+        dataContext.current({ name: last.name, url: last.url, params: params })
+      }
     }
   })
 

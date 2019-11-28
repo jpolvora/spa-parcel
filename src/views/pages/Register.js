@@ -13,16 +13,15 @@ const viewModel = {
     if (!this.username.isValid()) return alert('usuário inválido')
     if (!this.password.isValid()) return alert('senha inválida')
     if (!this.token()) return window.location.reload()
+    console.log(this.token())
     const loginResult = await execLogin(this.username(), this.password(), this.token())
+
     if (loginResult.success) {
-      pubsub.publish('login', true)
       pubsub.publish('navigate', '/')
     } else {
-      console.error(loginResult.message)
-      pubsub.publish('login', false)
       await swal({
         title: 'Logon',
-        text: loginResult.message || 'Erro login',
+        text: (loginResult.json && loginResult.json.error) || (loginResult.error && loginResult.error.text) || loginResult.error || 'Erro login',
         icon: 'error',
         button: 'Ok'
       })
@@ -94,13 +93,15 @@ export default {
   `,
 
   afterRender: async () => {
-    ko.applyBindings(viewModel, document.getElementById('register'))
+    const node = document.getElementById('register')
+    ko.cleanNode(node)
+    ko.applyBindings(viewModel, node)
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const result = await getToken()
 
-      if (result.success && result.token) {
-        viewModel.token(result.token)
+      if (result.success && result.json && result.json.token) {
+        viewModel.token(result.json.token)
         break
       } else {
         await swal({
