@@ -78,10 +78,10 @@ async function postJson(url, token = '', body = {}) {
     .url(url)
     .options({
       headers: {
-        Authorization: token
+        'x-csrf-token': token
       }
     })
-    .body(body)
+    .json(body)
     .post()
     .json(json => {
       console.debug(json)
@@ -105,8 +105,9 @@ async function postJson(url, token = '', body = {}) {
 export const checkLogin = () => getJson('/api/user/check')
 export const getToken = () => getJson('/api/user/login')
 
-export const execLogin = (usuario, senha, token) =>
-  postJson('/api/user/login', token, {
+export const execLogin = (usuario, senha, token) => {
+  return postJson('/api/user/login', token, {
     usuario,
     senha
   })
+}

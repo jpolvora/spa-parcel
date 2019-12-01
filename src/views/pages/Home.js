@@ -6,7 +6,7 @@ export default {
     const result = await checkLogin()
     if (result.error) return '/register'
 
-    const infoMessage = `Olá, ${(result.json && result.json.user && result.json.user.fullName) || 'Erro'}`
+    const infoMessage = `Olá, ${(result.json && result.json.username) || 'Erro'}`
     pubsub.publish('showMessage', {
       text: infoMessage,
       title: 'Login',
