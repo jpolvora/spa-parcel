@@ -70,16 +70,23 @@ async function postJson(url, token = '', body = {}) {
     json: false
   }
 
+  // eslint-disable-next-line no-debugger
+  debugger
+
   pubsub.publish('busy', true)
 
   await delay(100)
 
+  const headers = {}
+
+  if (token) {
+    headers['x-csrf-token'] = token
+  }
+
   await externalApi
     .url(url)
     .options({
-      headers: {
-        'x-csrf-token': token
-      }
+      headers
     })
     .json(body)
     .post()
@@ -106,7 +113,7 @@ export const checkLogin = () => getJson('/api/user/check')
 export const getToken = () => getJson('/api/user/login')
 
 export const execLogin = (usuario, senha, token) => {
-  return postJson('/api/user/login', token, {
+  return postJson('/api/user/login', '', {
     usuario,
     senha
   })
